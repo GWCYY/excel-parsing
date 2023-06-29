@@ -2,10 +2,15 @@ package com.rookiesquad.excelparsing.dto;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 
+import java.io.Serial;
+
 /**
  * @author lianghonglei
  */
-public class PayData implements BaseData{
+public class PaidInData implements BaseData {
+
+    @Serial
+    private static final long serialVersionUID = 5026016680555073684L;
 
     @ExcelProperty(value = "姓名")
     private String name;
@@ -14,10 +19,10 @@ public class PayData implements BaseData{
     private String cardNo;
 
     @ExcelProperty(value = "社保合计")
-    private String ssAccount;
+    private String totalSocialInsuranceBenefit;
 
     @ExcelProperty(value = "公积金")
-    private String pafAccount;
+    private String totalProvidentFund;
 
     public String getName() {
         return name;
@@ -35,19 +40,19 @@ public class PayData implements BaseData{
         this.cardNo = cardNo;
     }
 
-    public String getSsAccount() {
-        return ssAccount;
+    public String getTotalSocialInsuranceBenefit() {
+        return totalSocialInsuranceBenefit;
     }
 
-    public void setSsAccount(String ssAccount) {
-        this.ssAccount = ssAccount;
+    public void setTotalSocialInsuranceBenefit(String ssAccount) {
+        this.totalSocialInsuranceBenefit = ssAccount;
     }
 
-    public String getPafAccount() {
-        return pafAccount;
+    public String getTotalProvidentFund() {
+        return totalProvidentFund;
     }
 
-    public void setPafAccount(String pafAccount) {
-        this.pafAccount = pafAccount;
+    public void setTotalProvidentFund(String pafAccount) {
+        this.totalProvidentFund = pafAccount;
     }
 }

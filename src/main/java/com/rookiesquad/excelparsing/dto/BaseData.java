@@ -1,7 +1,9 @@
 package com.rookiesquad.excelparsing.dto;
 
-public interface BaseData {
+import java.io.Serializable;
 
-    public abstract String getCardNo();
+public interface BaseData extends Serializable {
+
+    String getCardNo();
 
 }
