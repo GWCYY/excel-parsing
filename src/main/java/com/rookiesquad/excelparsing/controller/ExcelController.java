@@ -8,6 +8,6 @@ public class ExcelController {
 
     @GetMapping("/test")
     public void testRead(String filePath){
-
+        System.out.println(filePath);
     }
 }
