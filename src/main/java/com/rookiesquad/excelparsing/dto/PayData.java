@@ -5,7 +5,7 @@ import com.alibaba.excel.annotation.ExcelProperty;
 /**
  * @author lianghonglei
  */
-public class PayData extends BaseData{
+public class PayData implements BaseData{
 
     @ExcelProperty(value = "姓名")
     private String name;

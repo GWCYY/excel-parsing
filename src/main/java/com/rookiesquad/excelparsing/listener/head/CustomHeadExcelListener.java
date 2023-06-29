@@ -10,18 +10,6 @@ public abstract class CustomHeadExcelListener extends AnalysisEventListener<Map<
     protected int headerRow = -1;
 
     /**
-     * 读取表头信息
-     *
-     * @param headMap
-     * @param context
-     */
-    @Override
-    public void invokeHeadMap(Map<Integer, String> headMap, AnalysisContext context) {
-        super.invokeHeadMap(headMap, context);
-    }
-
-
-    /**
      * 读取完数据的操作
      *
      * @param analysisContext

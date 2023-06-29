@@ -1,0 +1,108 @@
+# 共有8个级别，按照从低到高为：ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF。
+# intLevel值依次为0,100,200,300,400,500,600,700
+# intLevel 值越小，级别越高
+Configuration:
+  # 日志框架本身的输出日志级别
+  status: WARN
+  # 自动加载配置文件的间隔时间，不低于5秒
+  monitorInterval: 5
+  packages: com.smartadmin.config.log.plugin
+
+  Properties: # 定义全局变量
+    Property: # 缺省配置（用于开发环境）。其他环境需要在VM参数中指定，如下：
+      - name: LOG_PATH    # 输出文件路径
+        value: ./logs
+      - name: DEFAULT_FILENAME    # 默认文件名
+        value: spring
+      - name: DEFAULT_PATTERN    # 默认日志输出格式
+        value: "%d{HH:mm:ss.SSS} %5p ${sys:PID} --- [%15.15t] %-40.40c{1.} : %m%n%xwEx"
+
+  Appenders:
+    Console: #控制台输出
+      name: CONSOLE
+      target: SYSTEM_OUT
+      PatternLayout: # 日志消息格式
+        pattern: "%clr{%d{HH:mm:ss.SSS}}{faint} %clr{%5p} %clr{${sys:PID}}{magenta} %clr{---}{faint} %clr{[%15.15t]}{faint} %X{user} %clr{%-40.40c{1.}}{cyan} %clr{:}{faint} %m%n%xwEx"
+
+
+    RollingFile: # 输出到文件，超过128MB归档
+      - name: FILE
+        fileName: ${LOG_PATH}/app/app.log    #输出文件的地址
+        ignoreExceptions: false
+        filePattern: "${LOG_PATH}/app/%d{yyyy-MM-dd}-%i.zip"    # 文件生成规则
+        ThresholdFilter: # 日志级别过滤器
+          level: DEBUG    # 日志级别
+          onMatch: ACCEPT    # 高于INFO级别放行
+          onMismatch: DENY    # 低于INFO级别拦截
+        PatternLayout:
+          pattern: "${DEFAULT_PATTERN}"
+        Policies: # 日志拆分规则
+          SizeBasedTriggeringPolicy: # 日志拆分规则
+            size: "128 MB"
+          TimeBasedTriggeringPolicy: # 按天分类
+            modulate: true
+            interval: 1
+        DefaultRolloverStrategy: # 单目录下，文件最多20个，超过会删除最早之前的
+          max: 20
+
+      - name: ERROR_FILE
+        fileName: ${LOG_PATH}/err/err.log    #输出文件的地址
+        ignoreExceptions: false
+        filePattern: "${LOG_PATH}/err/%d{yyyy-MM-dd}-%i.zip"    # 文件生成规则
+        #        ThresholdFilter: # 日志级别过滤器
+        #          level: WARN    # 日志级别
+        #          onMatch: ACCEPT    # 高于INFO级别放行
+        #          onMismatch: DENY    # 低于INFO级别拦截
+        PatternLayout:
+          pattern: "${DEFAULT_PATTERN}"
+        Policies: # 日志拆分规则
+          SizeBasedTriggeringPolicy: # 日志拆分规则
+            size: "128 MB"
+          TimeBasedTriggeringPolicy: # 按天分类
+            modulate: true
+            interval: 1
+        DefaultRolloverStrategy: # 单目录下，文件最多20个，超过会删除最早之前的
+          max: 20
+
+  # 自定义Appender
+  #    OperatorLogEsAppender:
+  #      - name: OPERATOR_LOG_FILE
+  #        ignoreExceptions: false
+  #        PatternLayout:
+  #          pattern: "%m%n%xwEx"
+
+  Loggers:
+    Root:
+      level: INFO #root的级别为info，如果为debug的话，输出的内容太多
+      AppenderRef:
+        - ref: CONSOLE
+
+    Logger:
+      # 操作日志
+      #      - name: com.smartadmin.config.log.OperatorLogAspect
+      #        level: INFO
+      #        AppenderRef:
+      #          - ref: OPERATOR_LOG_FILE
+      #      - name: com.smartadmin.config.exception.CatchException
+      #        level: INFO
+      #        AppenderRef:
+      #          - ref: OPERATOR_LOG_FILE
+      #      # 登录日志
+      #      - name: com.smartadmin.controller.common.LoginController.loginLog
+      #        level: TRACE
+      #        AppenderRef:
+      #          - ref: LOGIN_LOG_FILE
+      - name: com.mysql
+        level: INFO
+      - name: bboss
+        level: INFO
+      - name: org.springframework
+        level: WARN
+      - name: org.spring.springboot.dao
+        level: DEBUG
+      - name: org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver
+        level: ERROR
+      - name: com.rookiesquad。excelparsing
+        level: DEBUG
+        AppenderRef:
+          - ref: FILE

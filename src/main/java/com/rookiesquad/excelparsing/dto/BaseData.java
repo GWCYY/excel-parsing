@@ -1,5 +1,7 @@
 package com.rookiesquad.excelparsing.dto;
 
-public class BaseData {
+public interface BaseData {
+
+    public abstract String getCardNo();
 
 }
