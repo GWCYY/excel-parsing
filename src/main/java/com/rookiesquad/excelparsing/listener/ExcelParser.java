@@ -3,10 +3,6 @@ package com.rookiesquad.excelparsing.listener;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
-import com.alibaba.excel.metadata.Cell;
-import com.alibaba.excel.metadata.data.CellData;
-import com.alibaba.excel.read.metadata.holder.ReadHolder;
-import com.alibaba.excel.read.metadata.holder.ReadRowHolder;
 import com.alibaba.fastjson2.JSON;
 import com.rookiesquad.excelparsing.dto.BillData;
 
@@ -18,7 +14,7 @@ import java.util.Map;
 public class ExcelParser {
 
     public static void main(String[] args) {
-        String filePath = "C:\\Users\\15155\\Desktop\\Desktop\\账单\\1有限公司202305费用明细.xls";
+        String filePath = "C:\\Users\\wade\\Desktop\\Desktop\\账单\\1有限公司202305费用明细.xls";
         String[] possibleHeaders = {"身份证号", "身份证号码"};
 
         ExcelListener excelListener = new ExcelListener();

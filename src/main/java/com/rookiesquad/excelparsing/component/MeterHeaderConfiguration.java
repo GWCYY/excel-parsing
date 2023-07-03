@@ -12,49 +12,49 @@ public class MeterHeaderConfiguration {
     /**
      * 姓名名称列表
      */
-    private List<String> nameList;
+    private List<String> nameNameList;
     /**
      * 身份证号名称列表
      */
-    private List<String> cardNoList;
+    private List<String> cardNoNameList;
     /**
      * 社保合计名称列表
      */
-    private List<String> totalSocialInsuranceBenefitList;
+    private List<String> totalSocialInsuranceBenefitNameList;
     /**
      * 公积金合计名称列表
      */
-    private List<String> totalProvidentFundList;
+    private List<String> totalProvidentFundNameList;
 
-    public List<String> getNameList() {
-        return nameList;
+    public List<String> getNameNameList() {
+        return nameNameList;
     }
 
-    public void setNameList(List<String> nameList) {
-        this.nameList = nameList;
+    public void setNameNameList(List<String> nameNameList) {
+        this.nameNameList = nameNameList;
     }
 
-    public List<String> getCardNoList() {
-        return cardNoList;
+    public List<String> getCardNoNameList() {
+        return cardNoNameList;
     }
 
-    public void setCardNoList(List<String> cardNoList) {
-        this.cardNoList = cardNoList;
+    public void setCardNoNameList(List<String> cardNoNameList) {
+        this.cardNoNameList = cardNoNameList;
     }
 
-    public List<String> getTotalSocialInsuranceBenefitList() {
-        return totalSocialInsuranceBenefitList;
+    public List<String> getTotalSocialInsuranceBenefitNameList() {
+        return totalSocialInsuranceBenefitNameList;
     }
 
-    public void setTotalSocialInsuranceBenefitList(List<String> totalSocialInsuranceBenefitList) {
-        this.totalSocialInsuranceBenefitList = totalSocialInsuranceBenefitList;
+    public void setTotalSocialInsuranceBenefitNameList(List<String> totalSocialInsuranceBenefitNameList) {
+        this.totalSocialInsuranceBenefitNameList = totalSocialInsuranceBenefitNameList;
     }
 
-    public List<String> getTotalProvidentFundList() {
-        return totalProvidentFundList;
+    public List<String> getTotalProvidentFundNameList() {
+        return totalProvidentFundNameList;
     }
 
-    public void setTotalProvidentFundList(List<String> totalProvidentFundList) {
-        this.totalProvidentFundList = totalProvidentFundList;
+    public void setTotalProvidentFundNameList(List<String> totalProvidentFundNameList) {
+        this.totalProvidentFundNameList = totalProvidentFundNameList;
     }
 }
