@@ -15,21 +15,9 @@ public class BillExcelListener extends CustomContentExcelListener<BillData> {
 
     @Override
     protected void dealContent(Map<Integer, String> data) {
-        if (currentHeader != null) {
-            BillData billData = new BillData();
-            columnIndexMap.keySet().forEach(columnIndex -> {
-                String columnName = columnIndexMap.get(columnIndex);
-                String columnValue = data.get(columnIndex);
-                switch (columnName) {
-                    case "cardNum" -> billData.setCardNo(columnValue);
-                    case "name" -> billData.setName(columnValue);
-                    case "totalSocialInsuranceBenefit" -> billData.setTotalSocialInsuranceBenefit(columnValue);
-                    case "totalProvidentFund" -> billData.setTotalProvidentFund(columnValue);
-                    default -> logger.warn("Unnecessary data is not saved");
-                }
-            });
-            sourceDataList.add(billData);
-        }
+        BillData billData = new BillData();
+        fillSourceDataList(billData, data);
     }
+
 }
 

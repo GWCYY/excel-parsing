@@ -17,11 +17,8 @@ public class PaidInExcelListener extends CustomContentExcelListener<PaidInData> 
 
     @Override
     protected void dealContent(Map<Integer, String> data) {
-        // 当前行是数据行
-        if (currentHeader != null) {
-            PaidInData paidInData = new PaidInData();
-
-        }
+        PaidInData paidInData = new PaidInData();
+        fillSourceDataList(paidInData, data);
     }
 }
 

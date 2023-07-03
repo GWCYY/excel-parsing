@@ -11,7 +11,6 @@ public enum ReconciliationType {
     private final Integer code;
     private final String description;
 
-
     ReconciliationType(Integer code, String description) {
         this.code = code;
         this.description = description;
@@ -25,9 +24,9 @@ public enum ReconciliationType {
         return description;
     }
 
-    public static ReconciliationType getByCode(Integer code){
+    public static ReconciliationType getByCode(Integer code) {
         for (ReconciliationType reconciliation : ReconciliationType.values()) {
-            if (reconciliation.getCode().equals(code)){
+            if (reconciliation.getCode().equals(code)) {
                 return reconciliation;
             }
         }

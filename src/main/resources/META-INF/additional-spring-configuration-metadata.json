@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "excel.head",
+      "type": "com.rookiesquad.excelparsing.component.MeterHeaderConfiguration",
+      "description": "Description for excel.head.nameNameList."
+  }
+] }

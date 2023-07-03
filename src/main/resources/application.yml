@@ -12,3 +12,17 @@ spring:
     show-sql: true
 logging:
   config: classpath:log4j2.yml
+
+excel:
+  head:
+    nameNameList:
+      - 姓名
+      - 名称
+    cardNoNameList:
+      - 身份证
+      - 身份证号码
+    totalSocialInsuranceBenefitNameList:
+      - 社保合计
+    totalProvidentFundNameList:
+      - 公积金合计
+      - 公积金

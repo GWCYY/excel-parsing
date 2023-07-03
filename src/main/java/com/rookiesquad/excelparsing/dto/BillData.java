@@ -56,4 +56,13 @@ public class BillData implements BaseData {
         this.totalProvidentFund = pafAccount;
     }
 
+    @Override
+    public String toString() {
+        return "BillData{" +
+                "name='" + name + '\'' +
+                ", cardNo='" + cardNo + '\'' +
+                ", totalSocialInsuranceBenefit='" + totalSocialInsuranceBenefit + '\'' +
+                ", totalProvidentFund='" + totalProvidentFund + '\'' +
+                '}';
+    }
 }

@@ -8,10 +8,7 @@ import com.rookiesquad.excelparsing.dto.BaseData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class CustomContentExcelListener<T extends BaseData> extends AnalysisEventListener<Map<Integer, String>> {
 
@@ -33,10 +30,6 @@ public abstract class CustomContentExcelListener<T extends BaseData> extends Ana
      */
     @Override
     public void invoke(Map<Integer, String> data, AnalysisContext context) {
-//        if (Objects.isNull(data) || !StringUtils.hasText(data.getCardNo())) {
-//            return;
-//        }
-//        sourceDataList.add(data);
         List<String> cardNoList = meterHeaderConfiguration.getCardNoNameList();
         boolean hasIdCardNo = false;
         for (String cardNoName : cardNoList) {
@@ -48,26 +41,28 @@ public abstract class CustomContentExcelListener<T extends BaseData> extends Ana
         if (hasIdCardNo) {
             dealHead(data);
         } else {
-            dealContent(data);
+            if (currentHeader != null) {
+                dealContent(data);
+            }
         }
         logger.info("Read a piece of data : [{}]", data);
     }
 
     protected abstract void dealContent(Map<Integer, String> data);
 
-    protected void fillSourceDataList(T result, Map<Integer, String> data){
+    protected void fillSourceDataList(T result, Map<Integer, String> data) {
         columnIndexMap.keySet().forEach(columnIndex -> {
             String columnName = columnIndexMap.get(columnIndex);
             String columnValue = data.get(columnIndex);
             switch (columnName) {
                 case "cardNum" -> result.setCardNo(columnValue);
                 case "name" -> result.setName(columnValue);
-                case "totalSocialInsuranceBenefit" -> result.setTotalSocialInsuranceBenefit(columnValue);
-                case "totalProvidentFund" -> result.setTotalProvidentFund(columnValue);
+                case "totalSocialInsuranceBenefit" -> result.setTotalSocialInsuranceBenefit(Optional.ofNullable(columnValue).orElse("0"));
+                case "totalProvidentFund" -> result.setTotalProvidentFund(Optional.ofNullable(columnValue).orElse("0"));
                 default -> logger.warn("Unnecessary data is not saved");
             }
         });
-        sourceDataList.add(paidInData);
+        sourceDataList.add(result);
     }
 
     private void dealHead(Map<Integer, String> data) {
@@ -99,15 +94,11 @@ public abstract class CustomContentExcelListener<T extends BaseData> extends Ana
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext analysisContext) {
-
+        logger.info("doAfterAllAnalysed");
     }
 
     public List<T> getSourceDataList() {
         return sourceDataList;
-    }
-
-    public MeterHeaderConfiguration getMeterHeaderConfiguration() {
-        return meterHeaderConfiguration;
     }
 
     public void setMeterHeaderConfiguration(MeterHeaderConfiguration meterHeaderConfiguration) {
