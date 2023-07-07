@@ -10,8 +10,15 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-logging:
-  config: classpath:log4j2.yml
+#logging:
+#  config: classpath:log4j2.yml
+
+thread:
+  pool:
+    core-pool-size: 10
+    maximum-pool-size: 20
+    keep-alive-time: 3600
+    queue-capacity: 10
 
 excel:
   head:

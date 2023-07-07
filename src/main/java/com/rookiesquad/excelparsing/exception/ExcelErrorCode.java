@@ -2,7 +2,8 @@ package com.rookiesquad.excelparsing.exception;
 
 public enum ExcelErrorCode {
 
-    ILLEGAL_RECONCILIATION_TYPE(1000010001, "{ILLEGAL_RECONCILIATION_TYPE}", "非法的对账类型");
+    ILLEGAL_RECONCILIATION_TYPE(1000010001, "{ILLEGAL_RECONCILIATION_TYPE}", "非法的对账类型"),
+    INVALID_FILE_PATH(1000010002, "{INVALID_FILE_PATH}", "无效的文件路径");
 
     private final long code;
     private final String message;

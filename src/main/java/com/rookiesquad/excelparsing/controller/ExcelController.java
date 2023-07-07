@@ -1,15 +1,14 @@
 package com.rookiesquad.excelparsing.controller;
 
 import com.rookiesquad.excelparsing.service.ExcelService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/excel")
 public class ExcelController {
-
-    private static final Logger logger = LoggerFactory.getLogger(ExcelController.class);
 
     private final ExcelService excelService;
 
@@ -18,8 +17,13 @@ public class ExcelController {
     }
 
     @GetMapping("/test")
-    public void testRead(String filePath){
-        excelService.testRead(filePath);
+    public void testRead(Long batchNumber){
+        excelService.testRead(batchNumber);
+    }
+
+    @PostMapping("/reconciliation-data")
+    public void parsingExcel(Long batchNumber){
+        excelService.parsingExcel(batchNumber);
     }
 
 }

@@ -14,13 +14,13 @@ public class ReconciliationData implements Serializable {
     private static final long serialVersionUID = -40731148723266202L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @Column(name = "username", nullable = false, columnDefinition = "varchar(32) comment '姓名'")
     private String name;
 
-    @Column(name = "id_card_number", nullable = false, columnDefinition = "varchar(18) comment '身份证号码'")
+    @Column(name = "id_card_number", nullable = false, columnDefinition = "varchar(32) comment '身份证号码'")
     private String cardNo;
 
     @Column(name = "total_social_insurance_benefit", columnDefinition = "float(10,2) comment '社保合计'")
@@ -60,16 +60,23 @@ public class ReconciliationData implements Serializable {
         return totalSocialInsuranceBenefit;
     }
 
-    public void setTotalSocialInsuranceBenefit(String ssAccount) {
-        this.totalSocialInsuranceBenefit = ssAccount;
+    public void setTotalSocialInsuranceBenefit(String totalSocialInsuranceBenefit) {
+        this.totalSocialInsuranceBenefit = totalSocialInsuranceBenefit;
     }
 
     public String getTotalProvidentFund() {
         return totalProvidentFund;
     }
 
-    public void setTotalProvidentFund(String pafAccount) {
-        this.totalProvidentFund = pafAccount;
+    public void setTotalProvidentFund(String totalProvidentFund) {
+        this.totalProvidentFund = totalProvidentFund;
     }
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
 }

@@ -4,5 +4,26 @@
       "name": "excel.head",
       "type": "com.rookiesquad.excelparsing.component.MeterHeaderConfiguration",
       "description": "Description for excel.head.nameNameList."
-  }
-] }
+    },
+    {
+      "name": "thread.pool.core-pool-size",
+      "type": "java.lang.String",
+      "description": "Description for thread.pool.core-pool-size."
+    },
+    {
+      "name": "thread.pool.maximum-pool-size",
+      "type": "java.lang.String",
+      "description": "Description for thread.pool.maximum-pool-size."
+    },
+    {
+      "name": "thread.pool.keep-alive-time",
+      "type": "java.lang.String",
+      "description": "Description for thread.pool.keep-alive-time."
+    },
+    {
+      "name": "thread.pool.queue-capacity",
+      "type": "java.lang.String",
+      "description": "Description for thread.pool.queue-capacity."
+    }
+  ]
+}

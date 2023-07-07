@@ -102,7 +102,7 @@ Configuration:
         level: DEBUG
       - name: org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver
         level: ERROR
-      - name: com.rookiesquad。excelparsing
+      - name: com.rookiesquad.excelparsing
         level: DEBUG
         AppenderRef:
           - ref: FILE
