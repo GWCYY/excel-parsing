@@ -94,7 +94,7 @@ public class ExcelService implements BaseService {
         for (File file : files) {
             String fileName = file.getName();
             if (file.isFile() && (fileName.endsWith(".xls") || fileName.endsWith(".xlsx"))) {
-                filePathList.add(folder.getAbsolutePath() + File.separator + file);
+                filePathList.add(folder.getAbsolutePath() + File.separator + fileName);
             }
             if (file.isDirectory()) {
                 filePathList.addAll(listFolder(file));
