@@ -2,11 +2,11 @@ package com.rookiesquad.excelparsing.service;
 
 import com.rookiesquad.excelparsing.constant.ReconciliationType;
 import com.rookiesquad.excelparsing.entity.AnalysisConfiguration;
-import com.rookiesquad.excelparsing.entity.ReconciliationData;
+import com.rookiesquad.excelparsing.entity.BillParsingData;
 import com.rookiesquad.excelparsing.exception.ExcelErrorCode;
 import com.rookiesquad.excelparsing.exception.ExcelException;
 import com.rookiesquad.excelparsing.repository.AnalysisConfigurationRepository;
-import com.rookiesquad.excelparsing.repository.ReconciliationDataRepository;
+import com.rookiesquad.excelparsing.repository.BillParsingDataRepository;
 import com.rookiesquad.excelparsing.runable.ExcelParsingRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,14 +31,15 @@ public class ExcelService implements BaseService {
     private static final Logger logger = LoggerFactory.getLogger(ExcelService.class);
 
     private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
-    private final ReconciliationDataRepository reconciliationDataRepository;
     private final AnalysisConfigurationRepository analysisConfigurationRepository;
+    private final BillParsingDataRepository billParsingDataRepository;
 
-    public ExcelService(ThreadPoolTaskExecutor threadPoolTaskExecutor, ReconciliationDataRepository reconciliationDataRepository,
-                        AnalysisConfigurationRepository analysisConfigurationRepository) {
+    public ExcelService(ThreadPoolTaskExecutor threadPoolTaskExecutor,
+                        AnalysisConfigurationRepository analysisConfigurationRepository,
+                        BillParsingDataRepository billParsingDataRepository) {
         this.threadPoolTaskExecutor = threadPoolTaskExecutor;
-        this.reconciliationDataRepository = reconciliationDataRepository;
         this.analysisConfigurationRepository = analysisConfigurationRepository;
+        this.billParsingDataRepository = billParsingDataRepository;
     }
 
 
@@ -128,7 +129,7 @@ public class ExcelService implements BaseService {
         return filePathList;
     }
 
-    public Page<ReconciliationData> pageParsingExcelResult(Pageable pageable) {
-        return reconciliationDataRepository.findAll(pageable);
+    public Page<BillParsingData> pageParsingExcelResult(Pageable pageable) {
+        return billParsingDataRepository.findBillData(pageable);
     }
 }

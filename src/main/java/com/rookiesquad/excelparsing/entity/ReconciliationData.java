@@ -5,10 +5,8 @@ import jakarta.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 
-@Entity
-@Table(name = "excel_reconciliation_data", schema = "excel", uniqueConstraints = {@UniqueConstraint(name = "unique_idx_id_card_number",
-        columnNames = {"id_card_number"})})
-public class ReconciliationData implements Serializable {
+@MappedSuperclass
+public abstract class ReconciliationData implements Serializable {
 
     @Serial
     private static final long serialVersionUID = -40731148723266202L;

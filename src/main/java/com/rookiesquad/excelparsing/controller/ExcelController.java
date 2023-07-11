@@ -1,6 +1,6 @@
 package com.rookiesquad.excelparsing.controller;
 
-import com.rookiesquad.excelparsing.entity.ReconciliationData;
+import com.rookiesquad.excelparsing.entity.BillParsingData;
 import com.rookiesquad.excelparsing.service.ExcelService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -30,7 +30,7 @@ public class ExcelController {
     }
 
     @GetMapping("/reconciliation-data")
-    public Page<ReconciliationData> pageParsingExcelResult(Pageable pageable){
+    public Page<BillParsingData> pageParsingExcelResult(Pageable pageable){
         return excelService.pageParsingExcelResult(pageable);
     }
 
