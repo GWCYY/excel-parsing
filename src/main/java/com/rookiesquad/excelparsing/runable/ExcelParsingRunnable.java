@@ -8,6 +8,7 @@ import com.alibaba.excel.read.metadata.ReadSheet;
 import com.rookiesquad.excelparsing.component.ApplicationUtils;
 import com.rookiesquad.excelparsing.component.MeterHeaderConfiguration;
 import com.rookiesquad.excelparsing.constant.CommonConstants;
+import com.rookiesquad.excelparsing.constant.ParsingResult;
 import com.rookiesquad.excelparsing.constant.ReconciliationType;
 import com.rookiesquad.excelparsing.constant.RegularConstants;
 import com.rookiesquad.excelparsing.dto.BaseData;
@@ -20,6 +21,7 @@ import com.rookiesquad.excelparsing.listener.content.PaidInExcelListener;
 import com.rookiesquad.excelparsing.listener.head.BillHeadExcelListener;
 import com.rookiesquad.excelparsing.listener.head.CustomHeadExcelListener;
 import com.rookiesquad.excelparsing.listener.head.PaidInHeadExcelListener;
+import com.rookiesquad.excelparsing.repository.AnalysisConfigurationRepository;
 import com.rookiesquad.excelparsing.repository.ReconciliationDataRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,19 +31,21 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 
-public class ExcelParsingRunnable implements Runnable {
+public class ExcelParsingRunnable implements Callable<Integer> {
 
     private static final Logger logger = LoggerFactory.getLogger(ExcelParsingRunnable.class);
     private final ReconciliationDataRepository reconciliationDataRepository = ApplicationUtils.getBean(ReconciliationDataRepository.class);
+    private final AnalysisConfigurationRepository analysisConfigurationRepository = ApplicationUtils.getBean(AnalysisConfigurationRepository.class);
 
     private CountDownLatch countDownLatch;
     private String filePath;
     private ReconciliationType reconciliationType;
 
     @Override
-    public void run() {
+    public Integer call() {
         logger.info("Start parsing excel : [{}]", filePath);
         long startTime = System.currentTimeMillis();
         CustomHeadExcelListener customHeadExcelListener;
@@ -103,6 +107,11 @@ public class ExcelParsingRunnable implements Runnable {
         countDownLatch.countDown();
         long endTime = System.currentTimeMillis();
         logger.info("Parsing file [{}] takes time: [{}]ms", filePath, endTime - startTime);
+        return ParsingResult.SUCCESS.getCode();
+    }
+
+    public Thread currentThread(){
+        return Thread.currentThread();
     }
 
     public void setCountDownLatch(CountDownLatch countDownLatch) {

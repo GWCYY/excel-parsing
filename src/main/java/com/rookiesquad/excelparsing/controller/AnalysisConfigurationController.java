@@ -2,10 +2,9 @@ package com.rookiesquad.excelparsing.controller;
 
 import com.rookiesquad.excelparsing.entity.AnalysisConfiguration;
 import com.rookiesquad.excelparsing.service.AnalysisConfigurationService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/config")
@@ -20,6 +19,11 @@ public class AnalysisConfigurationController {
     @PostMapping("/analysis-configuration")
     public AnalysisConfiguration addAnalysisConfiguration(@RequestBody AnalysisConfiguration analysisConfiguration){
         return analysisConfigurationService.addAnalysisConfiguration(analysisConfiguration);
+    }
+
+    @GetMapping("/analysis-configuration")
+    public Page<AnalysisConfiguration> pageAnalysisConfiguration(Pageable pageable){
+        return analysisConfigurationService.pageAnalysisConfiguration(pageable);
     }
 
 }
