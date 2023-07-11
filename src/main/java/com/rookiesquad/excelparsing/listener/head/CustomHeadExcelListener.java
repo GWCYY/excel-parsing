@@ -45,6 +45,10 @@ public abstract class CustomHeadExcelListener extends AnalysisEventListener<Map<
         return headerRow;
     }
 
+    public void setHeaderRow(int headerRow) {
+        this.headerRow = headerRow;
+    }
+
     public void setMeterHeaderConfiguration(MeterHeaderConfiguration meterHeaderConfiguration) {
         this.meterHeaderConfiguration = meterHeaderConfiguration;
     }

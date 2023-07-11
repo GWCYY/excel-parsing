@@ -45,7 +45,6 @@ public abstract class CustomContentExcelListener<T extends BaseData> extends Ana
                 dealContent(data);
             }
         }
-        logger.info("Read a piece of data : [{}]", data);
     }
 
     protected abstract void dealContent(Map<Integer, String> data);

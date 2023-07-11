@@ -9,6 +9,7 @@ import com.rookiesquad.excelparsing.component.ApplicationUtils;
 import com.rookiesquad.excelparsing.component.MeterHeaderConfiguration;
 import com.rookiesquad.excelparsing.constant.CommonConstants;
 import com.rookiesquad.excelparsing.constant.ReconciliationType;
+import com.rookiesquad.excelparsing.constant.RegularConstants;
 import com.rookiesquad.excelparsing.dto.BaseData;
 import com.rookiesquad.excelparsing.entity.ReconciliationData;
 import com.rookiesquad.excelparsing.exception.ExcelErrorCode;
@@ -33,6 +34,7 @@ import java.util.concurrent.CountDownLatch;
 public class ExcelParsingRunnable implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(ExcelParsingRunnable.class);
+    private final ReconciliationDataRepository reconciliationDataRepository = ApplicationUtils.getBean(ReconciliationDataRepository.class);
 
     private CountDownLatch countDownLatch;
     private String filePath;
@@ -41,7 +43,8 @@ public class ExcelParsingRunnable implements Runnable {
     @Override
     public void run() {
         logger.info("Start parsing excel : [{}]", filePath);
-        CustomHeadExcelListener customHeadExcelListener = null;
+        long startTime = System.currentTimeMillis();
+        CustomHeadExcelListener customHeadExcelListener;
         CustomContentExcelListener<? extends BaseData> customContentExcelListener;
         switch (reconciliationType) {
             case BILL -> {
@@ -67,27 +70,39 @@ public class ExcelParsingRunnable implements Runnable {
             if (headerRowNum != CommonConstants.DEFAULT_HEAD_ROW_NUM) {
                 headRowNumBySheetName.put(sheet.getSheetNo(), customHeadExcelListener.getHeaderRow());
             }
+            customHeadExcelListener.setHeaderRow(CommonConstants.DEFAULT_HEAD_ROW_NUM);
         }
         headRowNumBySheetName.forEach((sheetNo, headRowNum) -> EasyExcelFactory.read(filePath, customContentExcelListener)
                 .sheet(sheetNo).headRowNumber(headRowNum).doRead());
         logger.info("Parsing excel : [{}] finish", filePath);
         List<ReconciliationData> reconciliationDataList = new ArrayList<>();
         customContentExcelListener.getSourceDataList().forEach(sourceData -> {
-            if (!StringUtils.hasText(sourceData.getCardNo())) {
+            String cardNo = sourceData.getCardNo();
+            if (!StringUtils.hasText(cardNo) || !RegularConstants.NUMBER_PATTERN.matcher(cardNo).matches()){
                 return;
             }
             logger.info(sourceData.toString());
             ReconciliationData reconciliationData = new ReconciliationData();
             reconciliationData.setCardNo(sourceData.getCardNo());
             reconciliationData.setName(sourceData.getName());
-            reconciliationData.setTotalSocialInsuranceBenefit(sourceData.getTotalSocialInsuranceBenefit());
-            reconciliationData.setTotalProvidentFund(sourceData.getTotalProvidentFund());
+            String totalSocialInsuranceBenefit = sourceData.getTotalSocialInsuranceBenefit();
+            totalSocialInsuranceBenefit = StringUtils.hasText(totalSocialInsuranceBenefit) ? totalSocialInsuranceBenefit : "0";
+            reconciliationData.setTotalSocialInsuranceBenefit(Float.parseFloat(totalSocialInsuranceBenefit));
+            String totalProvidentFund = sourceData.getTotalProvidentFund();
+            totalProvidentFund = StringUtils.hasText(totalProvidentFund) ? totalProvidentFund : "0";
+            reconciliationData.setTotalProvidentFund(Float.parseFloat(totalProvidentFund));
             reconciliationData.setType(reconciliationType.getCode());
             reconciliationDataList.add(reconciliationData);
         });
-        ReconciliationDataRepository reconciliationDataRepository = ApplicationUtils.getBean(ReconciliationDataRepository.class);
-        reconciliationDataRepository.saveAll(reconciliationDataList);
+        try {
+            reconciliationDataRepository.saveAll(reconciliationDataList);
+        } catch (Exception exception){
+            logger.error("文件: [{}]出现异常", filePath);
+            throw new ExcelException(exception.getCause());
+        }
         countDownLatch.countDown();
+        long endTime = System.currentTimeMillis();
+        logger.info("Parsing file [{}] takes time: [{}]ms", filePath, endTime - startTime);
     }
 
     public void setCountDownLatch(CountDownLatch countDownLatch) {

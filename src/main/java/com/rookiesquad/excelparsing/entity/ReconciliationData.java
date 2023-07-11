@@ -24,10 +24,10 @@ public class ReconciliationData implements Serializable {
     private String cardNo;
 
     @Column(name = "total_social_insurance_benefit", columnDefinition = "float(10,2) comment '社保合计'")
-    private String totalSocialInsuranceBenefit;
+    private Float totalSocialInsuranceBenefit;
 
     @Column(name = "total_provident_fund", columnDefinition = "float(10,2) comment '公积金合计'")
-    private String totalProvidentFund;
+    private Float totalProvidentFund;
 
     @Column(name = "type", nullable = false, columnDefinition = "tinyint comment '0-账单; 1-实缴'")
     private Integer type;
@@ -56,19 +56,19 @@ public class ReconciliationData implements Serializable {
         this.cardNo = cardNo;
     }
 
-    public String getTotalSocialInsuranceBenefit() {
+    public Float getTotalSocialInsuranceBenefit() {
         return totalSocialInsuranceBenefit;
     }
 
-    public void setTotalSocialInsuranceBenefit(String totalSocialInsuranceBenefit) {
+    public void setTotalSocialInsuranceBenefit(Float totalSocialInsuranceBenefit) {
         this.totalSocialInsuranceBenefit = totalSocialInsuranceBenefit;
     }
 
-    public String getTotalProvidentFund() {
+    public Float getTotalProvidentFund() {
         return totalProvidentFund;
     }
 
-    public void setTotalProvidentFund(String totalProvidentFund) {
+    public void setTotalProvidentFund(Float totalProvidentFund) {
         this.totalProvidentFund = totalProvidentFund;
     }
 
