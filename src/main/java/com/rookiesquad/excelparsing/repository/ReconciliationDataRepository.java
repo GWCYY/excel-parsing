@@ -1,8 +1,9 @@
 package com.rookiesquad.excelparsing.repository;
 
-import com.rookiesquad.excelparsing.entity.ReconciliationData;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.NoRepositoryBean;
 
-public interface ReconciliationDataRepository<T extends ReconciliationData> extends JpaRepository<T, Long> {
+@NoRepositoryBean
+public interface ReconciliationDataRepository<T, K> extends JpaRepository<T, K> {
 
 }

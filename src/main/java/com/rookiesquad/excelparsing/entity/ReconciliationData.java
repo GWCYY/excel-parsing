@@ -11,10 +11,6 @@ public abstract class ReconciliationData implements Serializable {
     @Serial
     private static final long serialVersionUID = -40731148723266202L;
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
     @Column(name = "username", nullable = false, columnDefinition = "varchar(32) comment '姓名'")
     private String name;
 
@@ -29,14 +25,6 @@ public abstract class ReconciliationData implements Serializable {
 
     @Column(name = "type", nullable = false, columnDefinition = "tinyint comment '0-账单; 1-实缴'")
     private Integer type;
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getId() {
-        return id;
-    }
 
     public String getName() {
         return name;

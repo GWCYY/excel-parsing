@@ -31,7 +31,7 @@ public abstract class ExcelParsingService<T extends BaseData> implements BaseSer
 
     protected CustomHeadExcelListener customHeadExcelListener;
     protected CustomContentExcelListener<T> customContentExcelListener;
-    protected ReconciliationDataRepository<? extends ReconciliationData> reconciliationDataRepository;
+    protected ReconciliationDataRepository<? extends ReconciliationData, Long> reconciliationDataRepository;
     protected MeterHeaderConfiguration meterHeaderConfiguration;
 
     @Autowired
