@@ -16,6 +16,7 @@ public class BillExcelListener extends CustomContentExcelListener<BillData> {
     @Override
     protected void dealContent(Map<Integer, String> data) {
         BillData billData = new BillData();
+        logger.info("start fillSourceDataList...");
         fillSourceDataList(billData, data);
     }
 

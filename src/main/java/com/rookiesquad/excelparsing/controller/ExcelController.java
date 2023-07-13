@@ -1,13 +1,16 @@
 package com.rookiesquad.excelparsing.controller;
 
-import com.rookiesquad.excelparsing.entity.BillParsingData;
+import com.rookiesquad.excelparsing.entity.ReconciliationResult;
 import com.rookiesquad.excelparsing.service.ExcelService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/excel")
@@ -29,9 +32,14 @@ public class ExcelController {
         excelService.parsingExcel(batchNumber);
     }
 
-    @GetMapping("/reconciliation-data")
-    public Page<BillParsingData> pageParsingExcelResult(Pageable pageable){
+    @GetMapping("/reconciliation-result")
+    public Page<ReconciliationResult> pageParsingExcelResult(Pageable pageable){
         return excelService.pageParsingExcelResult(pageable);
+    }
+
+    @GetMapping("/reconciliation-result/excel")
+    public void downloadParsingExcelResult(HttpServletResponse response) throws IOException {
+        excelService.downloadParsingExcelResult(response);
     }
 
 }

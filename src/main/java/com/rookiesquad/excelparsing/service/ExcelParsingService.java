@@ -13,7 +13,6 @@ import com.rookiesquad.excelparsing.dto.BaseData;
 import com.rookiesquad.excelparsing.entity.ReconciliationData;
 import com.rookiesquad.excelparsing.listener.content.CustomContentExcelListener;
 import com.rookiesquad.excelparsing.listener.head.CustomHeadExcelListener;
-import com.rookiesquad.excelparsing.repository.ReconciliationDataRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,6 @@ public abstract class ExcelParsingService<T extends BaseData> implements BaseSer
 
     protected CustomHeadExcelListener customHeadExcelListener;
     protected CustomContentExcelListener<T> customContentExcelListener;
-    protected ReconciliationDataRepository<? extends ReconciliationData, Long> reconciliationDataRepository;
     protected MeterHeaderConfiguration meterHeaderConfiguration;
 
     @Autowired

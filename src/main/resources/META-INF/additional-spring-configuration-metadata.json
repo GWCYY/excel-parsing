@@ -24,6 +24,16 @@
       "name": "thread.pool.queue-capacity",
       "type": "java.lang.String",
       "description": "Description for thread.pool.queue-capacity."
+    },
+    {
+      "name": "excel.export.max-sheet-number",
+      "type": "java.lang.String",
+      "description": "Description for excel.export.max-sheet-number."
+    },
+    {
+      "name": "excel.export.single-sheet-data-number",
+      "type": "java.lang.String",
+      "description": "Description for excel.export.single-sheet-data-number."
     }
   ]
 }

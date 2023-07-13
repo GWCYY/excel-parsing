@@ -1,22 +1,33 @@
 package com.rookiesquad.excelparsing.service;
 
+import com.alibaba.excel.EasyExcelFactory;
+import com.alibaba.excel.ExcelWriter;
+import com.alibaba.excel.write.metadata.WriteSheet;
 import com.rookiesquad.excelparsing.constant.ReconciliationType;
 import com.rookiesquad.excelparsing.entity.AnalysisConfiguration;
-import com.rookiesquad.excelparsing.entity.BillParsingData;
+import com.rookiesquad.excelparsing.entity.ReconciliationResult;
 import com.rookiesquad.excelparsing.exception.ExcelErrorCode;
 import com.rookiesquad.excelparsing.exception.ExcelException;
 import com.rookiesquad.excelparsing.repository.AnalysisConfigurationRepository;
-import com.rookiesquad.excelparsing.repository.BillParsingDataRepository;
+import com.rookiesquad.excelparsing.repository.ReconciliationResultRepository;
 import com.rookiesquad.excelparsing.runable.ExcelParsingRunnable;
+import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -30,16 +41,30 @@ public class ExcelService implements BaseService {
 
     private static final Logger logger = LoggerFactory.getLogger(ExcelService.class);
 
+    private static final String SYSTEM_TEMP_DIRECTORY = System.getProperty("java.io.tmpdir");
+    private static final String DEFAULT_EXCEL_SUFFIX = ".xlsx";
+
     private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
     private final AnalysisConfigurationRepository analysisConfigurationRepository;
-    private final BillParsingDataRepository billParsingDataRepository;
+    private final ReconciliationResultRepository reconciliationResultRepository;
+
+    /**
+     * 单sheet页最大数据量
+     */
+    @Value("${excel.export.single-sheet-data-number:3000}")
+    private int singleSheetDataNumber;
+    /**
+     * 单文件最大sheet数量
+     */
+    @Value("${excel.export.sheet-number:10}")
+    private int maxSheetNumber;
 
     public ExcelService(ThreadPoolTaskExecutor threadPoolTaskExecutor,
                         AnalysisConfigurationRepository analysisConfigurationRepository,
-                        BillParsingDataRepository billParsingDataRepository) {
+                        ReconciliationResultRepository reconciliationResultRepository) {
         this.threadPoolTaskExecutor = threadPoolTaskExecutor;
         this.analysisConfigurationRepository = analysisConfigurationRepository;
-        this.billParsingDataRepository = billParsingDataRepository;
+        this.reconciliationResultRepository = reconciliationResultRepository;
     }
 
 
@@ -129,7 +154,53 @@ public class ExcelService implements BaseService {
         return filePathList;
     }
 
-    public Page<BillParsingData> pageParsingExcelResult(Pageable pageable) {
-        return billParsingDataRepository.findBillData(pageable);
+    public Page<ReconciliationResult> pageParsingExcelResult(Pageable pageable) {
+        return reconciliationResultRepository.findReconciliationResult(pageable);
     }
+
+    public void downloadParsingExcelResult(HttpServletResponse response) throws IOException {
+        int reconciliationDataCount = reconciliationResultRepository.findAllReconciliationDataCount();
+        int sheetNumber = reconciliationDataCount / singleSheetDataNumber + 1;
+        String fileName = null;
+        PageRequest pageRequest;
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        ExcelWriter excelWriter = EasyExcelFactory.write(byteArrayOutputStream).excludeColumnFieldNames(ReconciliationResult.EXCLUDE_FIELD).build();
+        for (int i = 0; i < sheetNumber; i++) {
+            pageRequest = PageRequest.of(i, singleSheetDataNumber);
+            Page<ReconciliationResult> reconciliationResultPage = reconciliationResultRepository.findReconciliationResult(pageRequest);
+            List<ReconciliationResult> currentBatchData = reconciliationResultPage.getContent();
+            boolean firstSheet = i % maxSheetNumber == 0;
+            if (firstSheet) {
+                if (byteArrayOutputStream.size() > 0) {
+                    writeParsingExcelResult(fileName, byteArrayOutputStream);
+                    byteArrayOutputStream = new ByteArrayOutputStream();
+                    excelWriter = EasyExcelFactory.write(byteArrayOutputStream, ReconciliationResult.class).build();
+                }
+                fileName = SYSTEM_TEMP_DIRECTORY + File.separator + System.currentTimeMillis() + DEFAULT_EXCEL_SUFFIX;
+            }
+            WriteSheet writeSheet = EasyExcelFactory
+                    .writerSheet("reconciliationResult" + i)
+                    .head(ReconciliationResult.class)
+                    .excludeColumnFieldNames(ReconciliationResult.EXCLUDE_FIELD)
+                    .build();
+            excelWriter.write(currentBatchData, writeSheet);
+            if(maxSheetNumber == (i + 1) || sheetNumber == (i + 1)){
+                excelWriter.finish();
+            }
+        }
+        if (byteArrayOutputStream.size() > 0) {
+            excelWriter.finish();
+            writeParsingExcelResult(fileName, byteArrayOutputStream);
+        }
+        // TODO 还需要对各文件进行打包下载
+    }
+
+    private static void writeParsingExcelResult(String fileName, ByteArrayOutputStream byteArrayOutputStream) {
+        try {
+            Files.write(Paths.get(fileName), byteArrayOutputStream.toByteArray(), StandardOpenOption.CREATE);
+        } catch (IOException exception) {
+            throw new ExcelException(ExcelErrorCode.WRITE_FILE_FAILED);
+        }
+    }
+
 }

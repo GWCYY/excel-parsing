@@ -18,7 +18,8 @@ import java.util.List;
 
 @Service
 public class BillParsingService extends ExcelParsingService<BillData> {
-    private static final Logger logger = LoggerFactory.getLogger(PaidInParsingService.class);
+
+    private static final Logger logger = LoggerFactory.getLogger(BillParsingService.class);
 
     private final BillParsingDataRepository billParsingDataRepository;
 

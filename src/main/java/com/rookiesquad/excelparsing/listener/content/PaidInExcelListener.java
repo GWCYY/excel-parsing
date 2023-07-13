@@ -18,6 +18,7 @@ public class PaidInExcelListener extends CustomContentExcelListener<PaidInData> 
     @Override
     protected void dealContent(Map<Integer, String> data) {
         PaidInData paidInData = new PaidInData();
+        logger.info("start fillSourceDataList...");
         fillSourceDataList(paidInData, data);
     }
 }

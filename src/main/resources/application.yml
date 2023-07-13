@@ -33,3 +33,6 @@ excel:
     totalProvidentFundNameList:
       - 公积金合计
       - 公积金
+  export:
+    single-sheet-data-number: 5
+    max-sheet-number: 10
