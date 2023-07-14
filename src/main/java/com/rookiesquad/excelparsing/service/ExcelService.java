@@ -4,6 +4,9 @@ import com.alibaba.excel.EasyExcelFactory;
 import com.alibaba.excel.ExcelWriter;
 import com.alibaba.excel.write.metadata.WriteSheet;
 import com.rookiesquad.excelparsing.constant.ReconciliationType;
+import com.rookiesquad.excelparsing.dto.BaseData;
+import com.rookiesquad.excelparsing.dto.BillData;
+import com.rookiesquad.excelparsing.dto.PaidInData;
 import com.rookiesquad.excelparsing.entity.AnalysisConfiguration;
 import com.rookiesquad.excelparsing.entity.ReconciliationResult;
 import com.rookiesquad.excelparsing.exception.ExcelErrorCode;
@@ -31,6 +34,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -40,6 +44,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class ExcelService implements BaseService {
 
     private static final Logger logger = LoggerFactory.getLogger(ExcelService.class);
+
+    private static final Random RANDOM = new Random();
 
     private static final String SYSTEM_TEMP_DIRECTORY = System.getProperty("java.io.tmpdir");
     private static final String DEFAULT_EXCEL_SUFFIX = ".xlsx";
@@ -158,7 +164,7 @@ public class ExcelService implements BaseService {
         return reconciliationResultRepository.findReconciliationResult(pageable);
     }
 
-    public void downloadParsingExcelResult(HttpServletResponse response) throws IOException {
+    public void downloadParsingExcelResult(HttpServletResponse response) {
         int reconciliationDataCount = reconciliationResultRepository.findAllReconciliationDataCount();
         int sheetNumber = reconciliationDataCount / singleSheetDataNumber + 1;
         String fileName = null;
@@ -184,7 +190,7 @@ public class ExcelService implements BaseService {
                     .excludeColumnFieldNames(ReconciliationResult.EXCLUDE_FIELD)
                     .build();
             excelWriter.write(currentBatchData, writeSheet);
-            if(maxSheetNumber == (i + 1) || sheetNumber == (i + 1)){
+            if (maxSheetNumber == (i + 1) || sheetNumber == (i + 1)) {
                 excelWriter.finish();
             }
         }
@@ -203,4 +209,79 @@ public class ExcelService implements BaseService {
         }
     }
 
+    public void buildTestData() {
+        String filePath = "C:\\Wade\\TestData\\";
+        List<BillData> billDataList = new ArrayList<>();
+        List<PaidInData> paidInDataList = new ArrayList<>();
+        ByteArrayOutputStream billByteArrayOutputStream = new ByteArrayOutputStream();
+        ExcelWriter billExcelWriter = EasyExcelFactory.write(billByteArrayOutputStream).build();
+        int billSheetNum = 0;
+        int billFileNum = 0;
+        ByteArrayOutputStream paidInByteArrayOutputStream = new ByteArrayOutputStream();
+        ExcelWriter paidInExcelWriter = EasyExcelFactory.write(paidInByteArrayOutputStream).build();
+        int paidInSheetNum = 0;
+        int paidInFileNum = 0;
+        for (int i = 0; i < 10000000; i++) {
+            String cardNo = String.valueOf(341182199510061218L + i);
+            String name = "姓名" + i;
+            BillData billData = new BillData();
+            buildReconciliationData(billData, cardNo, name);
+            billDataList.add(billData);
+            if (billDataList.size() == 3000 || (i + 1 == 10000000)) {
+                WriteSheet writeSheet = EasyExcelFactory
+                        .writerSheet("bill" + billSheetNum)
+                        .head(BillData.class)
+                        .build();
+                billExcelWriter.write(billDataList, writeSheet);
+                billDataList = new ArrayList<>();
+                billSheetNum++;
+            }
+            if (billSheetNum == 10 || (i + 1 == 10000000)) {
+                billExcelWriter.finish();
+                writeParsingExcelResult(filePath + "bill" + billFileNum + DEFAULT_EXCEL_SUFFIX, billByteArrayOutputStream);
+                billByteArrayOutputStream = new ByteArrayOutputStream();
+                billExcelWriter = EasyExcelFactory.write(billByteArrayOutputStream).build();
+                billSheetNum = 0;
+                billFileNum++;
+            }
+            if (i % 100 == 0) {
+                continue;
+            }
+            if (i % 25 == 0) {
+                cardNo = String.valueOf(341183199510061218L + i);
+                name = "例外" + i;
+            }
+            PaidInData paidInData = new PaidInData();
+            buildReconciliationData(paidInData, cardNo, name);
+            paidInDataList.add(paidInData);
+            if (paidInDataList.size() == 3000 || (i + 1 == 10000000)) {
+                WriteSheet writeSheet = EasyExcelFactory
+                        .writerSheet("paidIn" + paidInSheetNum)
+                        .head(PaidInData.class)
+                        .build();
+                paidInExcelWriter.write(paidInDataList, writeSheet);
+                paidInDataList = new ArrayList<>();
+                paidInSheetNum++;
+            }
+            if (paidInSheetNum == 10 || (i + 1 == 10000000)) {
+                paidInExcelWriter.finish();
+                writeParsingExcelResult(filePath + "paidIn" + paidInFileNum + DEFAULT_EXCEL_SUFFIX, paidInByteArrayOutputStream);
+                paidInByteArrayOutputStream = new ByteArrayOutputStream();
+                paidInExcelWriter = EasyExcelFactory.write(paidInByteArrayOutputStream).build();
+                paidInSheetNum = 0;
+                paidInFileNum++;
+            }
+        }
+    }
+
+    private <T extends BaseData> void buildReconciliationData(T reconciliationData, String cardNo, String name) {
+        float min = 0f;
+        float max = 20000f;
+        reconciliationData.setCardNo(cardNo);
+        reconciliationData.setName(name);
+        float totalSocialInsuranceBenefit = min + RANDOM.nextFloat() * (max - min);
+        reconciliationData.setTotalSocialInsuranceBenefit(String.valueOf(totalSocialInsuranceBenefit));
+        float totalProvidentFund = min + RANDOM.nextFloat() * (max - min);
+        reconciliationData.setTotalProvidentFund(String.valueOf(totalProvidentFund));
+    }
 }

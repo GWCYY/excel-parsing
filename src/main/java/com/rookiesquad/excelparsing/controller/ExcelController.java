@@ -10,8 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("/excel")
 public class ExcelController {
@@ -38,8 +36,13 @@ public class ExcelController {
     }
 
     @GetMapping("/reconciliation-result/excel")
-    public void downloadParsingExcelResult(HttpServletResponse response) throws IOException {
+    public void downloadParsingExcelResult(HttpServletResponse response) {
         excelService.downloadParsingExcelResult(response);
+    }
+
+    @PostMapping("/test")
+    public void buildTestData(){
+        excelService.buildTestData();
     }
 
 }
